@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chunky Square with Intense Glow Effect</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 2px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth / 2;
+        canvas.height = window.innerHeight / 2;
+
+        const square = {
+            x: 50,
+            y: 50,
+            size: 30,
+            speed: 20,
+            dx: 0,
+            dy: 0
+        };
+
+        let updateCount = 0;
+        const updateInterval = 5;
+
+        function drawSquare() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 4; i > 0; i--) {
+                ctx.fillStyle = `rgba(0, 0, 255, ${i / 20})`;
+                ctx.fillRect(square.x - i * 5, square.y - i * 5, square.size + i * 10, square.size + i * 10);
+            }
+            
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(square.x, square.y, square.size, square.size);
+        }
+
+        function update() {
+            if (updateCount % updateInterval === 0) {
+                square.x += square.dx;
+                square.y += square.dy;
+
+                if (square.x < 0) square.x = 0;
+                if (square.y < 0) square.y = 0;
+                if (square.x + square.size > canvas.width) square.x = canvas.width - square.size;
+                if (square.y + square.size > canvas.height) square.y = canvas.height - square.size;
+
+                drawSquare();
+            }
+
+            updateCount++;
+            requestAnimationFrame(update);
+        }
+
+        function moveSquare(e) {
+            switch (e.key) {
+                case 'ArrowRight':
+                    square.dx = square.speed;
+                    square.dy = 0;
+                    break;
+                case 'ArrowLeft':
+                    square.dx = -square.speed;
+                    square.dy = 0;
+                    break;
+                case 'ArrowUp':
+                    square.dy = -square.speed;
+                    square.dx = 0;
+                    break;
+                case 'ArrowDown':
+                    square.dy = square.speed;
+                    square.dx = 0;
+                    break;
+            }
+        }
+
+        function stopSquare() {
+            square.dx = 0;
+            square.dy = 0;
+        }
+
+        document.addEventListener('keydown', moveSquare);
+        document.addEventListener('keyup', stopSquare);
+
+        update();
+    </script>
+</body>
+</html>
